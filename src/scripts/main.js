@@ -12,7 +12,7 @@ if (table) {
       return;
     }
 
-    const correntIndex = th.cellIndex;
+    const columnIndex = th.cellIndex;
 
     const bodyTable = table.querySelector('tbody');
     const bodyItems = bodyTable.querySelectorAll('tr');
@@ -28,14 +28,14 @@ if (table) {
     const arrayBodyItems = Array.from(bodyItems);
 
     arrayBodyItems.sort((itemFirst, itemSecond) => {
-      const arrayChildrenFirst = Array.from(itemFirst.children);
-      const arrayChildrenSecond = Array.from(itemSecond.children);
+      const tdFirst = itemFirst.cells[columnIndex];
+      const tdSecond = itemSecond.cells[columnIndex];
 
-      const tdFirst = arrayChildrenFirst[correntIndex];
-      const tdSecond = arrayChildrenSecond[correntIndex];
+      const firstValue = tdFirst ? tdFirst.textContent : '';
+      const secondValue = tdSecond ? tdSecond.textContent : '';
 
-      const firstNumber = toNumber(tdFirst.textContent);
-      const secondNumber = toNumber(tdSecond.textContent);
+      const firstNumber = toNumber(firstValue);
+      const secondNumber = toNumber(secondValue);
 
       if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
         return firstNumber - secondNumber;
