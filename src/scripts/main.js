@@ -6,72 +6,44 @@ if (table) {
   const headTable = table.querySelector('thead');
 
   headTable.addEventListener('click', (e) => {
-    const headContainer = [...e.target.closest('tr').children];
-    let headItems = [];
+    const th = e.target.closest('th');
 
-    headItems = headContainer.map((item, i) => {
-      return (item[i] = item.textContent);
-    });
-
-    let correntIndex = false;
-
-    if (e.target.textContent === 'Name') {
-      correntIndex = headItems.indexOf(e.target.textContent);
+    if (!th) {
+      return;
     }
 
-    if (e.target.textContent === 'Position') {
-      correntIndex = headItems.indexOf(e.target.textContent);
-    }
-
-    if (e.target.textContent === 'Age') {
-      correntIndex = headItems.indexOf(e.target.textContent);
-    }
-
-    if (e.target.textContent === 'Salary') {
-      correntIndex = headItems.indexOf(e.target.textContent);
-    }
+    const correntIndex = th.cellIndex;
 
     const bodyTable = table.querySelector('tbody');
     const bodyItems = bodyTable.querySelectorAll('tr');
 
-    if (correntIndex !== false && bodyItems) {
-      for (const section of bodyItems) {
-        const itemsSection = [...section.children];
-        let correntText = `${itemsSection[correntIndex].textContent.trim()}`;
+    const toNumber = (string) => {
+      let result = '';
 
-        correntText = correntText.replaceAll(' ', '_');
+      result = string.replaceAll(',', '').replaceAll('$', '');
 
-        section.className = '';
+      return +result;
+    };
 
-        section.classList.add(correntText);
-      }
-    } else {
-      return null;
-    }
+    const arrayBodyItems = Array.from(bodyItems);
 
-    const arrayItems = Array.from(bodyItems);
+    arrayBodyItems.sort((itemFirst, itemSecond) => {
+      const arrayChildrenFirst = Array.from(itemFirst.children);
+      const arrayChildrenSecond = Array.from(itemSecond.children);
 
-    arrayItems.sort((item1, item2) => {
-      let namesClass = [item1.className, item2.className];
+      const tdFirst = arrayChildrenFirst[correntIndex];
+      const tdSecond = arrayChildrenSecond[correntIndex];
 
-      namesClass = namesClass.map((item) => {
-        let result = [];
+      const firstNumber = toNumber(tdFirst.textContent);
+      const secondNumber = toNumber(tdSecond.textContent);
 
-        result = item.replaceAll(',', '').replaceAll('$', '');
-        result = result.replaceAll('_', ' ');
-
-        return result;
-      });
-
-      const [itemFirst, itemSecond] = namesClass;
-
-      if (!isNaN(itemFirst) && !isNaN(itemSecond)) {
-        return itemFirst - itemSecond;
+      if (!isNaN(firstNumber) && !isNaN(secondNumber)) {
+        return firstNumber - secondNumber;
       } else {
-        return itemFirst.localeCompare(itemSecond);
+        return tdFirst.textContent.localeCompare(tdSecond.textContent);
       }
     });
 
-    bodyTable.append(...arrayItems);
+    bodyTable.append(...arrayBodyItems);
   });
 }
